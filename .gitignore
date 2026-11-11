@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment variables
+.env
+
+# Storage keys and sensitive tokens
+storage/*
+!storage/.gitkeep
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Deepface / model weights cache
+.deepface/
+weights/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MediCipher temporary files
+temp_frames/
+temp_uploads/
+*.medcipher.tmp
+*.tmp
+

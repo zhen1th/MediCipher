@@ -1,0 +1,33 @@
+=======================================================
+RUMAH SAKIT UMUM PUSAT LABORATORIUM KLINIS
+INSTALASI PATOLOGI KLINIK DAN DIAGNOSTIK MOLEKULER
+=======================================================
+ID Pemeriksaan : LAB-2026-001
+Kode Pasien    : PSN-101
+Nama Pasien    : Budi Santoso (Data Fiktif untuk Pengujian Kriptografi)
+Tanggal Lahir  : 1985-04-12
+Jenis Kelamin  : Laki-laki
+Dokter Perujuk : dr. Hendra Wijaya, Sp.PK
+Waktu Sampling : 2026-11-11 08:30:00 WIB
+Waktu Selesai  : 2026-11-11 10:45:00 WIB
+Jenis Sampel   : Darah Lengkap (EDTA)
+-------------------------------------------------------
+HASIL PEMERIKSAAN HEMATOLOGI LENGKAP:
+-------------------------------------------------------
+Parameter               Hasil       Satuan      Nilai Rujukan   Metode
+-------------------------------------------------------
+Hemoglobin              14.2        g/dL        13.0 - 17.0     Sianmethemoglobin
+Leukosit                6.800       /uL         4.000 - 10.000  Flow Cytometry
+Hematokrit              42.5        %           40.0 - 52.0     Automated
+Trombosit               248.000     /uL         150.000 - 450.0 Impedansi
+Eritrosit               4.85        juta/uL     4.50 - 5.50     Optik Laser
+Laju Endap Darah (LED)  8           mm/jam      0 - 15          Westergren
+-------------------------------------------------------
+KESIMPULAN DAN CATATAN KLINIS:
+Seluruh parameter hematologi dalam rentang nilai rujukan normal.
+Morfologi sel darah merah dan putih menunjukkan gambaran normositik normokromik.
+Tidak ditemukan sel blas atau tanda kelainan hematologi akut.
+
+Penanggung Jawab Teknis Laboratorium:
+dr. Hendra Wijaya, Sp.PK (NIP: 197805142003121002)
+=======================================================
