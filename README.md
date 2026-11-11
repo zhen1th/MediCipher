@@ -95,7 +95,6 @@ MediCipher adalah sistem aplikasi desktop pengelolaan dan pengamanan arsip hasil
 - Pengolahan Gambar: Pillow (PIL)
 - Antarmuka Windows API: Windows ctypes dan pywin32
 - Manajemen Konfigurasi: python-dotenv
-- Kerangka Kerja Pengujian: pytest dan Python unittest
 
 ---
 
@@ -104,6 +103,7 @@ MediCipher adalah sistem aplikasi desktop pengelolaan dan pengamanan arsip hasil
 ```
 MediCipher/
 |-- main.py                      # Entri utama aplikasi desktop
+|-- run.bat                      # Skrip peluncur otomatis (Windows)
 |-- requirements.txt             # Daftar dependensi library Python
 |-- .env.example                 # Contoh file konfigurasi environment
 |-- .gitignore                   # Konfigurasi file yang diabaikan git
@@ -119,10 +119,11 @@ MediCipher/
 |   |-- schema.sql               # Skrip DDL inisialisasi tabel database
 |   |-- migrations.py            # Skrip otomatisasi tabel dan cek first-run
 |   |-- repository.py            # Akses query terparameterisasi dan transaksi
+|   |-- seed_dummy_data.py       # Data awal dummy untuk pengujian lokal
 |
 |-- authentication/
 |   |-- __init__.py
-|   |-- register.py              # Alur pendaftaran akun administrator awal
+|   |-- register.py              # Alur pendaftaran akun pengguna dan administrator
 |   |-- login.py                 # Alur login 3FA dan SessionManager
 |   |-- password.py              # Validasi dan hashing password Argon2id
 |   |-- face_verification.py     # Perekaman & verifikasi wajah Facenet512
@@ -140,7 +141,7 @@ MediCipher/
 |
 |-- steganography/
 |   |-- __init__.py
-|   |-- lsb.py                   # Penyisipan & ekstraksi LSB citra PNG
+|   |-- lsb.py                   # Penyisipan & ekstraksi LSB citra PNG dan JPG
 |
 |-- blockchain/
 |   |-- __init__.py
@@ -158,27 +159,19 @@ MediCipher/
 |-- ui/
 |   |-- __init__.py
 |   |-- theme.py                 # Definisi warna, font, dan adapter CustomTkinter
-|   |-- register_page.py         # Tampilan registrasi akun awal
+|   |-- auth_page.py             # Kontainer tab masuk (login) dan daftar (register)
+|   |-- register_page.py         # Tampilan registrasi akun
 |   |-- login_page.py            # Tampilan login tiga lapisan keamanan
 |   |-- dashboard.py             # Tampilan dashboard metrik dan audit log
 |   |-- text_encryption_page.py  # Tampilan super enkripsi teks
 |   |-- file_encryption_page.py  # Tampilan enkripsi berkas dokumen
 |   |-- medical_database_page.py # Tampilan manajemen arsip rekam medis
-|   |-- steganography_page.py    # Tampilan steganografi citra PNG
+|   |-- steganography_page.py    # Tampilan steganografi citra PNG dan JPG
 |   |-- blockchain_page.py       # Tampilan pencatatan dan verifikasi blockchain
-|   |-- settings_page.py         # Tampilan pengaturan sistem dan logout
+|   |-- settings_page.py         # Tampilan pengaturan sistem dan audit log
 |
-|-- assets/                      # Direktori ikon dan aset statis
-|-- storage/                     # Penyimpanan Master Key terproteksi DPAPI
-|
-|-- tests/                       # Unit test menyeluruh
-|   |-- test_authentication.py   # Pengujian password, wajah, dan USB dongle
-|   |-- test_vigenere.py         # Pengujian Vigenere Cipher
-|   |-- test_aes_ecb.py          # Pengujian super enkripsi teks
-|   |-- test_aes_cbc.py          # Pengujian enkripsi file .medcipher
-|   |-- test_database.py         # Pengujian KeyManager DPAPI dan AES-256-GCM
-|   |-- test_steganography.py    # Pengujian LSB citra PNG
-|   |-- test_blockchain.py       # Pengujian blok dan rantai hash SHA-256
+|-- assets/                      # Direktori contoh berkas dokumen dan citra medis
+|-- storage/                     # Penyimpanan Master Key terproteksi DPAPI (.gitkeep)
 ```
 
 ---
@@ -293,10 +286,10 @@ Setiap kali membuka aplikasi, seluruh tiga tahapan keamanan wajib dipenuhi:
 
 ### F. Penggunaan Steganografi Citra Laboratorium
 1. Buka menu **Steganografi Citra**.
-2. Pada panel kiri, klik **Pilih Gambar PNG Asli** (format wajib PNG). Sistem akan menghitung kapasitas bit maksimal gambar.
+2. Pada panel kiri, klik **Pilih Gambar PNG / JPG**. Sistem akan menghitung kapasitas bit maksimal gambar.
 3. Tulis pesan rahasia (misalnya ID sampel dan kode otentikasi) dan masukkan passphrase.
-4. Klik **Sisipkan Pesan & Simpan Sebagai PNG Baru**. Pesan dipra-enkripsi dengan AES-256-GCM lalu disisipkan ke bit LSB piksel warna.
-5. Pada panel kanan, pilih gambar PNG hasil steganografi, masukkan passphrase, lalu klik **Ekstrak & Dekripsi Pesan Rahasia**.
+4. Klik **Sisipkan Pesan & Simpan Gambar Stego**. Pesan dipra-enkripsi dengan AES-256-GCM lalu disisipkan ke citra baru.
+5. Pada panel kanan, pilih gambar hasil steganografi (PNG atau JPG), masukkan passphrase, lalu klik **Ekstrak & Dekripsi Pesan Rahasia**.
 
 ### G. Penggunaan Verifikasi Aset Digital Blockchain
 1. Buka menu **Verifikasi Blockchain**.
@@ -310,27 +303,7 @@ Setiap kali membuka aplikasi, seluruh tiga tahapan keamanan wajib dipenuhi:
 
 ---
 
-## 11. CARA MENJALANKAN PENGUJIAN OTOMATIS (UNIT TESTS)
-
-Pengujian mencakup 31 skenario uji unit otomatis untuk seluruh komponen kriptografi, hashing, biometrik, USB, steganografi, dan blockchain.
-
-Jalankan perintah berikut:
-
-```powershell
-python -m unittest discover -s tests -p "test_*.py" -v
-```
-
-Atau menggunakan pytest:
-
-```powershell
-pytest -v
-```
-
-Seluruh 31 pengujian dirancang independen, menguji skenario positif (berhasil), skenario negatif (penolakan kunci salah, deteksi manipulasi ciphertext, dan kegagalan integritas HMAC).
-
----
-
-## 12. BATASAN KEAMANAN DAN CATATAN AKADEMIK
+## 11. BATASAN KEAMANAN DAN CATATAN AKADEMIK
 
 1. **USB Flashdisk Biasa vs Hardware Security Module (HSM):**
    USB flashdisk standar bukan merupakan hardware token berstandar FIPS 140-2 yang memiliki chip kriptografi anti-tamper. Mekanisme token acak 256-bit dan identifikasi nomor seri volume Windows API pada proyek ini merupakan pengamanan prototipe perangkat fisik untuk tingkat tugas perkuliahan, bukan perlindungan anti-kloning tingkat hardware bersertifikasi militer.
